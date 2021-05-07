@@ -12,10 +12,8 @@
         android:id="@+id/text_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="25:00"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/progress_bar"
-        tools:layout_editor_absoluteX="143dp" />
+        android:text="00:00"
+        android:textSize="50sp" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -24,10 +22,6 @@
         android:layout_height="300dp"
         android:indeterminateOnly="false"
         android:progressDrawable="@drawable/circle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:progress="0" />
 
 
@@ -35,15 +29,19 @@
         android:id="@+id/button_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start"
-        app:layout_constraintStart_toEndOf="@+id/button_incr" />
+        android:text="start" />
 
     <Button
         android:id="@+id/button_incr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arttır"
-        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
+        android:text="Arttır" />
+
+    <Button
+        android:id="@+id/deneme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="deneme"/>
 
 
 </LinearLayout>
