@@ -1,7 +1,9 @@
 package com.hakanor.android101;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +11,9 @@ import android.widget.Button;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,15 +21,16 @@ public class MainActivity extends AppCompatActivity {
     private int progress_value=0;
     private Button button_incr ;
     private Button button_start ;
+    private Button deneme;
     private ProgressBar progress_bar;
     private TextView text_countdown;
     private CountDownTimer ct_timer;
     private long worktime = 1500000; // milisaniye
-    private long TimeLeft=worktime;
+    public long TimeLeft=worktime;
 
 
     private void startTimer(){
-        ct_timer = new CountDownTimer(worktime,1000) {
+        ct_timer = new CountDownTimer(TimeLeft,1000) {
             @Override
             public void onTick(long l) {
                     TimeLeft=l;
@@ -37,26 +42,77 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if(worktime==1500000){
-                    worktime=300000;
-                    TimeLeft=300000;
-                    updateTimer();
-                    progress_value=0;
-                    updateProgressBar();
-                    progress_bar.setMax(300);
-                    startTimer();
-                }
-                if(worktime==300000){
-                    worktime=1500000;
-                    TimeLeft=1500000;
-                    updateTimer();
-                    progress_value=0;
-                    updateProgressBar();
-                    progress_bar.setMax(1500);
-                    startTimer();
-                }
 
             }
+
+        }.start();
+    }
+
+    private void startTimer_work(){
+        progress_bar.setMax(1500);
+        ct_timer = new CountDownTimer(1500000,1000) {
+            @Override
+            public void onTick(long l) {
+                TimeLeft=l;
+                if (((TimeLeft / 1000 )%60)%1 == 0){
+                    progress_value+=1;
+                    updateProgressBar();}
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setTitle("Alarm!");
+                alertDialog.setMessage("Çalışma süreniz dolmuştur. Mola Süresi için onaylayın.");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ONAYLA", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Mola süreniz başladı.", Toast.LENGTH_SHORT).show();
+                        progress_value=0;
+                        updateProgressBar();
+                        startTimer_rest();
+                    }
+                });
+                alertDialog.show();
+            }
+
+        }.start();
+    }
+
+    private void startTimer_rest(){
+        progress_bar.setMax(300);
+        ct_timer = new CountDownTimer(300000,1000) {
+            @Override
+            public void onTick(long l) {
+                TimeLeft=l;
+                if (((TimeLeft / 1000 )%60)%1 == 0){
+                    progress_value+=1;
+                    updateProgressBar();}
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setTitle("Alarm!");
+                alertDialog.setMessage("Mola süreniz dolmuştur. Mola Süresi için onaylayın.");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ONAYLA", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Çalışma süreniz başladı.", Toast.LENGTH_SHORT).show();
+                        progress_value=0;
+                        updateProgressBar();
+                        startTimer_work();
+                    }
+                });
+                alertDialog.show();
+            }
+
         }.start();
     }
 
@@ -81,13 +137,13 @@ public class MainActivity extends AppCompatActivity {
         text_countdown=findViewById(R.id.text_countdown);
         button_start=findViewById(R.id.button_start);
         button_incr = findViewById(R.id.button_incr);
-
+        deneme=findViewById(R.id.deneme);
 
         // Start
         button_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTimer();
+                startTimer_rest();
             }
         });
 
@@ -96,10 +152,37 @@ public class MainActivity extends AppCompatActivity {
         button_incr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress_value+=10;
-                updateProgressBar();
+                //progress_value+=10;
+                System.out.println(worktime);
+                TimeLeft=10000;
+                updateTimer();
             }
         });
 
+        deneme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("-----------------------------------");
+                System.out.println("worktime : "+ worktime);
+                System.out.println("timeleft : "+TimeLeft);
+                System.out.println("progress_value : "+progress_value);
+                System.out.println("progress_max : "+progress_bar.getMax());
+                System.out.println("-----------------------------------");
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Alarm!");
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.setMessage("Mola süreniz dolmuştur. Mola Süresi için onaylayın.");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "ONAYLA", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "Çalışma süreniz başladı.", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+                alertDialog.show();
+
+            }
+        });
     }
 }
